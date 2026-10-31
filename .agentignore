@@ -1,0 +1,34 @@
+# .agentignore — path and content policy for agent tooling.
+#
+# Scope: protects against curious agents stumbling into protected paths and
+# high-confidence secret patterns leaking back to the model.
+#
+# Out of scope: adversarial exfil (compiled binaries, network calls,
+# custom-format secrets), shell globs and runtime-built paths, base64 or other
+# indirection, hardlinks and symlinks to protected files, and path-existence
+# leaks via listings. See the README's four limits — each is a decision, not an
+# oversight.
+#
+# PostToolUse: a matched `scrub:` pattern replaces the entire tool result
+# with a placeholder before the model sees it. The hook does not attempt
+# partial redaction; consider that cost before adding aggressive patterns.
+#
+# How to add:
+#   - Path rules: gitignore-style lines (e.g. `private/`). Supported syntax:
+#     leading `/` anchors to the repo root, trailing `/` marks a directory,
+#     `*`, `**`, `?` are wildcards, `!` negates, `#` comments.
+#   - Content patterns: `scrub: <regex>` lines, matched case-insensitively
+#     against tool result text. Comment a line out to relax.
+#   - The policy file, the hook, and harness settings are always blocked.
+
+# Path patterns (gitignore-style)
+secrets/api-key.txt
+private/
+.env
+
+# Content patterns (PostToolUse block-on-match)
+scrub: \bsk_(live|test)_[A-Za-z0-9]{16,}\b
+scrub: \bgh[pous]_[A-Za-z0-9]{30,}\b
+scrub: \bAKIA[0-9A-Z]{16}\b
+scrub: -----BEGIN (RSA |EC |OPENSSH |PGP )?PRIVATE KEY-----
+scrub: \beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b

@@ -111,6 +111,7 @@ try {
       assert.ok(!JSON.stringify(decision).includes(STRIPE), "replacement must not echo the secret");
     }],
     ["scrub: every shipped pattern blocks", () => {
+      // Fake fixtures for the scrub patterns, not real credentials.
       const samples = [
         STRIPE,
         `ghp_${"a".repeat(36)}`,

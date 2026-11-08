@@ -120,6 +120,10 @@ node tests/hook.test.mjs
 
 The suite builds a temporary repo, copies the policy and hook into the installed layout, and pipes real hook payloads to it. Rule cases must pass. The four limit cases assert the secure expectation and are expected to fail; the runner prints each miss, and exits non-zero only if a rule case fails or a documented limit stops failing. The hardlink case needs a filesystem that supports hardlinks (NTFS, APFS, ext4).
 
+## Related
+
+The write-up is at <https://chrisriedt.com/projects/agentignore/>.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
